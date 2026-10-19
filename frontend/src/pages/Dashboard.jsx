@@ -24,7 +24,7 @@ export default function Dashboard() {
       if (!token) return navigate('/login');
 
       try {
-        const response = await axios.get('http://localhost:5000/api/transactions', {
+        const response = await axios.get('https://spendwise-backend-sdmo.onrender.com/api/transactions', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setTransactions(response.data);
@@ -51,7 +51,7 @@ export default function Dashboard() {
 
       if (editingId) {
         // UPDATE existing transaction
-        const response = await axios.put(`http://localhost:5000/api/transactions/${editingId}`, payload, {
+        const response = await axios.put(`https://spendwise-backend-sdmo.onrender.com/api/transactions/${editingId}`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
         // Swap out the old transaction with the newly updated one in the list
@@ -59,7 +59,7 @@ export default function Dashboard() {
         setEditingId(null);
       } else {
         // CREATE new transaction
-        const response = await axios.post('http://localhost:5000/api/transactions', payload, {
+        const response = await axios.post('https://spendwise-backend-sdmo.onrender.com/api/transactions', payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setTransactions([response.data, ...transactions]);
@@ -77,7 +77,7 @@ export default function Dashboard() {
   const handleDeleteTransaction = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/transactions/${id}`, {
+      await axios.delete(`https://spendwise-backend-sdmo.onrender.com/api/transactions/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setTransactions(transactions.filter(t => t.id !== id));

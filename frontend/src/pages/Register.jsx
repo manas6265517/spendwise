@@ -13,7 +13,7 @@ export default function Register() {
     e.preventDefault();
     try {
       // Send data to our backend API
-      await axios.post('http://localhost:5000/api/auth/register', {
+      await axios.post('https://spendwise-backend-sdmo.onrender.com/api/auth/register', {
         name,
         email,
         password
