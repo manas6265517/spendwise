@@ -21,20 +21,34 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchTransactions = async () => {
       const token = localStorage.getItem('token');
-      if (!token) return navigate('/login');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
 
       try {
+        // Ensuring this points exactly to your Render backend, not localhost
         const response = await axios.get('https://spendwise-backend-sdmo.onrender.com/api/transactions', {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          }
         });
         setTransactions(response.data);
       } catch (err) {
-        if (err.response?.status === 401 || err.response?.status === 403) {
+        console.error("Dashboard API Error:", err.response || err);
+        
+        // Only kick the user out if the token is explicitly rejected
+        if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+          alert("Your login session is invalid. Please log in again.");
           localStorage.removeItem('token');
           navigate('/login');
+        } else {
+          // If it's just a slow network or sleeping Render server, stay on the dashboard!
+          alert("Network error: Could not fetch transactions, but you are logged in!");
         }
       }
     };
+
     fetchTransactions();
   }, [navigate]);
 
