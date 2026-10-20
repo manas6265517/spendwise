@@ -166,9 +166,9 @@ npm install
 Create a `.env` file in the `backend/` directory:
 
 ```env
-DATABASE_URL="postgresql://neondb_owner:npg_XL6qhHpMBvR1@ep-plain-butterfly-a121mfo7-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+DATABASE_URL="your_postgresql_connection_string"
 PORT=5000
-JWT_SECRET="spendwise_development_secret"
+JWT_SECRET="your_custom_secret_key"
 ```
 
 Generate the Prisma Client and synchronize the database schema:
