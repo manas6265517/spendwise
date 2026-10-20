@@ -50,15 +50,15 @@ const ExpenseChart = ({ transactions }) => {
         <ResponsiveContainer>
           <PieChart>
             <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              innerRadius={70} // This brings back the hollow Donut shape!
-              outerRadius={100}
-              fill="#8884d8"
-              dataKey="value"
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-            >
+  data={data}
+  cx="50%"
+  cy="50%"
+  innerRadius={70}  /* Increased to make the ring thicker */
+  outerRadius={100} /* Increased to make the chart wider */
+  paddingAngle={5}
+  dataKey="value"
+  label={false}
+>
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="#1e293b" strokeWidth={2} />
               ))}
