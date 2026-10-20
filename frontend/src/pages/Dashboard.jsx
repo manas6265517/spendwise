@@ -7,6 +7,7 @@ import SpendingTrendChart from '../components/SpendingTrendChart'; // Our new li
 import BudgetTracker from '../components/BudgetTracker'; 
 import SmartAdvisor from '../components/SmartAdvisor';
 import SavingsSimulator from '../components/SavingsSimulator';
+import CSVImporter from '../components/CSVImporter';
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
@@ -236,6 +237,12 @@ export default function Dashboard() {
               >
                 Goals & Simulator
               </button>
+              <button 
+                onClick={() => setActiveTab('import')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === 'import' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'}`}
+              >
+                Import Data
+              </button>
             </div>
           </div>
 
@@ -248,14 +255,20 @@ export default function Dashboard() {
         <div className="md:hidden flex bg-slate-800 rounded-lg p-1 border border-slate-700 mb-6">
            <button onClick={() => setActiveTab('dashboard')} className={`flex-1 py-2 rounded-md text-sm font-medium ${activeTab === 'dashboard' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>Dashboard</button>
            <button onClick={() => setActiveTab('simulator')} className={`flex-1 py-2 rounded-md text-sm font-medium ${activeTab === 'simulator' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>Simulator</button>
+           <button onClick={() => setActiveTab('import')} className={`flex-1 py-2 rounded-md text-sm font-medium ${activeTab === 'import' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}>Import</button>
         </div>
 
         {error && <div className="bg-rose-500/10 border border-rose-500/50 text-rose-400 p-3 rounded-lg mb-4">{error}</div>}
 
         {/* --- PAGE RENDERING LOGIC --- */}
-        {activeTab === 'simulator' ? (
+        {activeTab === 'import' ? (
           
-          /* Render the new Simulator Page */
+          /* Render the new CSV Import Page */
+          <CSVImporter onImportSuccess={() => window.location.reload()} />
+          
+        ) : activeTab === 'simulator' ? (
+          
+          /* Render the Simulator Page */
           <SavingsSimulator transactions={transactions} />
           
         ) : (
