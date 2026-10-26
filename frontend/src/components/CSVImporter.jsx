@@ -64,7 +64,7 @@ export default function CSVImporter({ onImportSuccess }) {
       };
 
       // Send to your Express backend
-      await axios.post('http://localhost:5000/api/transactions/bulk', payload);
+      await axios.post('https://spendwise-backend.onrender.com/api/transactions/bulk', payload);
       
       alert('Data successfully imported and synced to database!');
       clearFile();
