@@ -64,8 +64,7 @@ export default function CSVImporter({ onImportSuccess }) {
       };
 
       // Send to your Express backend
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      await axios.post(`${API_URL}/api/transactions/bulk`, payload);
+      await axios.post('http://localhost:5000/api/transactions/bulk', payload);
       
       alert('Data successfully imported and synced to database!');
       clearFile();
