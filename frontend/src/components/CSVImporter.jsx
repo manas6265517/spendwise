@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import Papa from 'papaparse';
 import { UploadCloud, FileText, CheckCircle2, AlertTriangle, X, ArrowRight } from 'lucide-react';
@@ -42,8 +43,8 @@ export default function CSVImporter({ onImportSuccess }) {
       header: true,
       skipEmptyLines: true,
       complete: (results) => {
-        setFullData(results.data); // Save everything for the backend
-        setPreviewData(results.data.slice(0, 5)); // Save just 5 for the UI
+        setFullData(results.data);
+        setPreviewData(results.data.slice(0, 5));
       },
     });
   };
@@ -57,39 +58,15 @@ export default function CSVImporter({ onImportSuccess }) {
   const handleImport = async () => {
     setIsUploading(true);
     try {
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        alert("Authentication error: Please log in again.");
-        return;
-      }
-
-      // Decode the token to extract the logged-in user's ID
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const decodedToken = JSON.parse(window.atob(base64));
-      
-      // Usually, the ID in the token is saved as 'id' or 'userId'
-      const currentUserId = decodedToken.id || decodedToken.userId;
-
-      if (!currentUserId) {
-        alert("Error: Could not read user ID from token.");
-        return;
-      }
-
+      // Assuming userId is 1 for now.
       const payload = {
-        userId: currentUserId, 
+        userId: 1,
         transactions: fullData
       };
 
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      
-      await axios.post(`${API_URL}/api/transactions/bulk`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      
+      // Send to your Express backend
+      await axios.post('http://localhost:5000/api/transactions/bulk', payload);
+
       alert('Data successfully imported and synced to database!');
       clearFile();
       if (onImportSuccess) onImportSuccess();
@@ -104,7 +81,7 @@ export default function CSVImporter({ onImportSuccess }) {
   return (
     <div className="animate-fade-in max-w-5xl mx-auto mt-6">
       <div className="bg-slate-800 rounded-2xl p-8 shadow-2xl border border-slate-700">
-        
+
         {/* Header */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-2">Data Import Studio</h2>
@@ -113,7 +90,7 @@ export default function CSVImporter({ onImportSuccess }) {
 
         {/* Drag & Drop Zone */}
         {!file ? (
-          <div 
+          <div
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -128,15 +105,15 @@ export default function CSVImporter({ onImportSuccess }) {
             </div>
             <h3 className="text-lg font-medium text-white mb-2">Drag and drop your CSV here</h3>
             <p className="text-slate-400 text-sm mb-6">Supported formats: .csv (Max size 5MB)</p>
-            
-            <input 
-              type="file" 
-              accept=".csv" 
-              className="hidden" 
-              ref={fileInputRef} 
-              onChange={handleFileSelect} 
+
+            <input
+              type="file"
+              accept=".csv"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
             />
-            <button 
+            <button
               onClick={() => fileInputRef.current?.click()}
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-6 rounded-lg transition-colors"
             >
@@ -144,7 +121,7 @@ export default function CSVImporter({ onImportSuccess }) {
             </button>
           </div>
         ) : (
-          
+
           /* Active File Preview State */
           <div className="space-y-6">
             <div className="flex items-center justify-between p-4 bg-slate-900 border border-slate-700 rounded-xl">
@@ -199,7 +176,7 @@ export default function CSVImporter({ onImportSuccess }) {
                 <AlertTriangle className="text-indigo-400" size={20} />
                 <p className="text-sm text-indigo-200">Our engine will automatically detect and skip duplicate entries during import.</p>
               </div>
-              <button 
+              <button
                 onClick={handleImport}
                 disabled={isUploading}
                 className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 text-white font-medium py-2 px-6 rounded-lg transition-colors"
