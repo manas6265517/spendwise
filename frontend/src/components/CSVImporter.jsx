@@ -57,29 +57,36 @@ export default function CSVImporter({ onImportSuccess }) {
   const handleImport = async () => {
     setIsUploading(true);
     try {
-      // 1. Retrieve the dynamically logged-in user's data and token from local storage
-      const userStr = localStorage.getItem('user'); // Adjust this key if you saved it differently (e.g., 'userInfo')
       const token = localStorage.getItem('token');
       
-      const loggedInUser = userStr ? JSON.parse(userStr) : null;
-      
-      if (!loggedInUser || !loggedInUser.id) {
+      if (!token) {
         alert("Authentication error: Please log in again.");
         return;
       }
 
-      // 2. Assign the transactions to the actual logged-in user's ID
+      // Decode the token to extract the logged-in user's ID
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const decodedToken = JSON.parse(window.atob(base64));
+      
+      // Usually, the ID in the token is saved as 'id' or 'userId'
+      const currentUserId = decodedToken.id || decodedToken.userId;
+
+      if (!currentUserId) {
+        alert("Error: Could not read user ID from token.");
+        return;
+      }
+
       const payload = {
-        userId: loggedInUser.id, 
+        userId: currentUserId, 
         transactions: fullData
       };
 
-      // 3. Send to the live Render backend (using Vercel env variable) with the security token
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       
       await axios.post(`${API_URL}/api/transactions/bulk`, payload, {
         headers: {
-          Authorization: `Bearer ${token}` // Proves to the backend exactly who is making the request
+          Authorization: `Bearer ${token}`
         }
       });
       
