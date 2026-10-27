@@ -57,14 +57,31 @@ export default function CSVImporter({ onImportSuccess }) {
   const handleImport = async () => {
     setIsUploading(true);
     try {
-      // Assuming userId is 1 for now. 
+      // 1. Retrieve the dynamically logged-in user's data and token from local storage
+      const userStr = localStorage.getItem('user'); // Adjust this key if you saved it differently (e.g., 'userInfo')
+      const token = localStorage.getItem('token');
+      
+      const loggedInUser = userStr ? JSON.parse(userStr) : null;
+      
+      if (!loggedInUser || !loggedInUser.id) {
+        alert("Authentication error: Please log in again.");
+        return;
+      }
+
+      // 2. Assign the transactions to the actual logged-in user's ID
       const payload = {
-        userId: 1,
+        userId: loggedInUser.id, 
         transactions: fullData
       };
 
-      // Send to your Express backend
-      await axios.post('http://localhost:5000/api/transactions/bulk', payload);
+      // 3. Send to the live Render backend (using Vercel env variable) with the security token
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      
+      await axios.post(`${API_URL}/api/transactions/bulk`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}` // Proves to the backend exactly who is making the request
+        }
+      });
       
       alert('Data successfully imported and synced to database!');
       clearFile();
